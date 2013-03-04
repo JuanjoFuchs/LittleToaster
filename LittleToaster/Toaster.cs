@@ -4,6 +4,8 @@ using System.Windows.Forms;
 namespace LittleToaster
 {
   public partial class Toaster : Form {
+    const int WS_EX_NOACTIVATE = 0x08000000;
+
     const int AnimationInterval = 10;
     const int MovementDelta = 5;
     const int HoldInterval = 20;
@@ -22,6 +24,7 @@ namespace LittleToaster
       
       TopMost = true;
       ShowInTaskbar = false;
+      Visible = false;
 
       if (!string.IsNullOrWhiteSpace(message)) {
         messageLabel.Text = message;
@@ -35,6 +38,22 @@ namespace LittleToaster
 
       _holdTimer = new Timer { Interval = HoldInterval };
       _holdTimer.Tick += HoldTimerOnTick;
+    }
+
+    protected override bool ShowWithoutActivation {
+      get {
+        return true;
+      }
+    }
+
+    protected override CreateParams CreateParams
+    {
+      get
+      {
+        var param = base.CreateParams;
+        param.ExStyle |= WS_EX_NOACTIVATE;
+        return param;
+      }
     }
 
     bool IsWindowCompletelyVisible {
@@ -66,11 +85,11 @@ namespace LittleToaster
       _startPositionY = WorkingAreaHeigh;
       SetDesktopLocation(_startPositionX, _startPositionY);
 
+      Visible = true;
       _appearTimer.Start();
     }
 
-    protected override void OnLoad(EventArgs e)
-    {
+    protected override void OnLoad(EventArgs e) {
       base.OnLoad(e);
       PositionWindow();
     }
@@ -85,8 +104,7 @@ namespace LittleToaster
       }
     }
 
-    void HoldTimerOnTick(object sender, EventArgs eventArgs)
-    {
+    void HoldTimerOnTick(object sender, EventArgs eventArgs) {
       _hold++;
       if (_hold > HoldInterval) {
         _holdTimer.Stop();
@@ -94,8 +112,7 @@ namespace LittleToaster
       }
     }
 
-    void DisappearTimerOnTick(object sender, EventArgs eventArgs)
-    {
+    void DisappearTimerOnTick(object sender, EventArgs eventArgs) {
       _startPositionY += MovementDelta;
       if (IsWindowCompletelyHidden) {
         _disappearTimer.Stop();

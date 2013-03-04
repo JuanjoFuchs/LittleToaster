@@ -34,6 +34,7 @@
       // messageLabel
       // 
       this.messageLabel.BackColor = System.Drawing.Color.Transparent;
+      this.messageLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.messageLabel.Dock = System.Windows.Forms.DockStyle.Fill;
       this.messageLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.messageLabel.Location = new System.Drawing.Point(0, 0);
